@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "sporty-tests"
+version = "0.1.0"
+description = ""
+authors = ["Markella Efthymiou <efthymioumarkella@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+selenium = "^4.19.0"
+pytest = "^8.1.1"
+webdriver-manager = "^4.0.1"
+pylint = "^3.1.0"
+python-dotenv = "^1.0.1"
+allure-pytest = "^2.13.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
