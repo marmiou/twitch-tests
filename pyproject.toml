@@ -1,20 +1,56 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+#[tool.isort]
+#profile = "black"
+#skip = ["env", "venv"]
+
 [tool.poetry]
 name = "sporty-tests"
 version = "0.1.0"
 description = ""
 authors = ["Markella Efthymiou <efthymioumarkella@gmail.com>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 selenium = "^4.19.0"
 pytest = "^8.1.1"
 webdriver-manager = "^4.0.1"
 pylint = "^3.1.0"
 python-dotenv = "^1.0.1"
 allure-pytest = "^2.13.5"
+pytest-selenium = "^4.1.0"
 
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+#[tool.poetry.group.dev.dependencies]
+#black = "^24.3.0"
+#isort = "5.13.2"
+#pre-commit = "^3.7.0"
+
+[tool.pytest.ini_options]
+addopts = [
+  "--clean-alluredir",
+  "--alluredir=reports/allure-results",
+  "--allure-link-pattern",
+  "issue:https://{}",
+  "--allure-link-pattern",
+  "link:https://{}",
+  "--allure-link-pattern",
+  "tms:https://{}",
+  "--color=yes",
+  "-s",
+  "-p no:logging"
+]
+#markers = [
+#  "security: marks security tests",
+#  "devRun: marks tests that run before merge to the main branch"
+#]
+#testpaths = [
+#  "tests"
+#]
+#
+
+
