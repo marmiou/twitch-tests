@@ -7,7 +7,6 @@ from selenium.webdriver.chrome.options import Options
 
 @pytest.fixture()
 def chrome_browser():
-    # Your existing setup
     driver = webdriver.Chrome()  # Consider using ChromeDriverManager as well for dynamic binary management
     driver.implicitly_wait(10)
     yield driver

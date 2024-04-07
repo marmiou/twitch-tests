@@ -1,3 +1,7 @@
 venv
 .idea/
 reports
+pageObjects/__pycache__/
+tests/__pycache__/
+utilities/__pycache__/
+.pytest_cache

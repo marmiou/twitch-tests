@@ -23,6 +23,7 @@ class StreamerPage:
 
     def video(self):
         return WebDriverWait(self.browser, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'video')))
+
     def streamer_name(self):
         return WebDriverWait(self.browser, 10).until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, '.CoreText-sc-1txzju1-0.kNTExs')))
@@ -67,7 +68,7 @@ class StreamerPage:
             self.video(),
             self.streamer_name(),
             self.follow_button(),
-            #TODO: Following selectors need fixing
+            # TODO: Following selectors need fixing
             # self.dropdown_menu(),
             # self.welcome_to_chat_room_msg(),
             self.send_msg_input(),

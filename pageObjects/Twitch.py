@@ -18,7 +18,7 @@ class MainPage:
         self.browser.get(url)
         WebDriverWait(self.browser, 10).until(EC.url_matches(url))
 
-    #TODO: Fix issue with close btn
+    # TODO: Fix issue with close btn
     def close_cookie_modal(self):
         try:
             WebDriverWait(self.browser, 10).until(
