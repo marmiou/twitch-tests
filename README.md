@@ -41,7 +41,7 @@ poetry install
 ## Available Commands
 To activate the project's virtual environment, run:
 ```bash
-poetry install
+poetry shell
 ```
 
 Alternatively, you can run commands within the virtual environment without activating it by using poetry run. 
