@@ -1,6 +1,7 @@
 import pytest
-from pageObjects.Twitch import MainPage
+
 from pageObjects.Streamer import StreamerPage
+from pageObjects.Twitch import MainPage
 
 
 @pytest.mark.parametrize('mobile_browser', ['iPhone X'], indirect=True) #'Galaxy S5'
