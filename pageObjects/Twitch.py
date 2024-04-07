@@ -1,3 +1,5 @@
+import time
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -6,7 +8,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class MainPage:
     COOKIE_MODAL_CLASS = 'ReactModal__Body--open'
-    CLOSE_BUTTON_CLASS = 'Layout-sc-1xcs6mc-0.jmTjSc'
+    COOKIE_POPUP_CSS_SELECTOR = ".ScTransitionBase-sc-hx4quq-0"
+    CLOSE_BUTTON_XPATH = '//button[contains(., "Close")]'
     SEARCH_ICON_SELECTOR = 'a[aria-label="Search"]'
     SEARCH_INPUT_SELECTOR = 'input[type="search"]'
     FIRST_STREAMER_SELECTOR = '[title="ESL_CS2"]'
@@ -18,15 +21,12 @@ class MainPage:
         self.browser.get(url)
         WebDriverWait(self.browser, 10).until(EC.url_matches(url))
 
-    # TODO: Fix issue with close btn
     def close_cookie_modal(self):
-        try:
-            WebDriverWait(self.browser, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, self.COOKIE_MODAL_CLASS)))
-            WebDriverWait(self.browser, 10).until(
-                EC.element_to_be_clickable((By.CLASS_NAME, self.CLOSE_BUTTON_CLASS))).click()
-        except:
-            print("Close button of Cookie consent modal could not be clicked.")
+
+        cookie_popup = WebDriverWait(self.browser, 10).until(
+                EC.visibility_of_element_located((By.CSS_SELECTOR, self.COOKIE_POPUP_CSS_SELECTOR)))
+        close_button = cookie_popup.find_element(By.XPATH, self.CLOSE_BUTTON_XPATH)
+        close_button.click()
 
     def search_icon(self):
         return WebDriverWait(self.browser, 10).until(

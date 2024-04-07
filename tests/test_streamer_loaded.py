@@ -8,7 +8,7 @@ from pageObjects.Twitch import MainPage
 def test_streamer_loaded(mobile_browser):
     twitch_page = MainPage(mobile_browser)
     twitch_page.go_to_url("https://m.twitch.tv/")
-    # twitch_page.close_cookie_modal()
+    twitch_page.close_cookie_modal()
     twitch_page.go_to_search()
     twitch_page.search_for("StarCraft II")
     twitch_page.scroll_down(2)
@@ -19,7 +19,6 @@ def test_streamer_loaded(mobile_browser):
     streamer_page.take_screenshot()
 
     for element in elements:
-
         assert element is not None, f"Element {element} is not present in the streamer"
 
 
