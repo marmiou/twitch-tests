@@ -1,9 +1,18 @@
 import pytest
+import allure
 
 from pageObjects.Streamer import StreamerPage
 from pageObjects.Twitch import MainPage
 
 
+@allure.epic("Twitch")
+@allure.story("Streamers")
+@allure.title("Test Streamer has loaded with all its basic components")
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.parent_suite("Twitch Tests suite")
+@allure.suite("Streamer Tests suite")
+@pytest.mark.streamer
+@pytest.mark.regression
 @pytest.mark.parametrize("mobile_browser", ["iPhone X", "Galaxy S5"], indirect=True)
 def test_streamer_loaded(mobile_browser):
     twitch_page = MainPage(mobile_browser)

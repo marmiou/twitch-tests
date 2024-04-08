@@ -46,7 +46,8 @@ addopts = [
 ]
 markers = [
   "smoke: marks tests that run before merge to the main branch",
-  "regression: marks tests that run manually or nightly after merge to the main branch"
+  "regression: marks tests that run manually or nightly after merge to the main branch",
+  "streamer: marks twitch tests"
 ]
 testpaths = [
   "tests"
