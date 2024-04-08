@@ -2,6 +2,7 @@ import os
 import shutil
 import time
 
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -9,7 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class StreamerPage:
     VIDEO_CSS_SELECTOR = "video"
-    STREAMER_NAME_CSS_SELECTOR = ".CoreText-sc-1txzju1-0.kNTExs"
+    STREAMER_NAME_CSS_SELECTOR = "p.CoreText-sc-1txzju1-0.kNTExs"
     FOLLOW_BUTTON_CSS_SELECTOR = 'div[data-a-target="tw-core-button-label-text"]'
     DROPDOWN_MENU_CSS_SELECTOR = '[aria-label="Open Dropdown Menu"]'
     WELCOME_TO_CHAT_ROOM_XPATH = '//div[contains(text(), "Welcome to the chat room!")]'
@@ -30,12 +31,12 @@ class StreamerPage:
         self.browser = browser
 
     def find_element_by_css_selector(self, css_selector):
-        return WebDriverWait(self.browser, 10).until(
+        return WebDriverWait(self.browser, 20).until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, css_selector))
         )
 
     def find_element_by_xpath(self, xpath):
-        return WebDriverWait(self.browser, 10).until(
+        return WebDriverWait(self.browser, 20).until(
             EC.visibility_of_element_located((By.XPATH, xpath))
         )
 
@@ -73,6 +74,12 @@ class StreamerPage:
     def get_video(self):
         return self.find_element_by_css_selector(self.VIDEO_CSS_SELECTOR)
 
+    def get_unavailable_video(self):
+        return self.browser.find_element(
+            By.XPATH,
+            "//p[contains(text(), 'This video is only available for subscribers.')]",
+        )
+
     def is_video_loaded(self):
         try:
             video_element = self.get_video()
@@ -86,16 +93,25 @@ class StreamerPage:
         while time.time() - start_time < timeout:
             if self.is_video_loaded():
                 return self.get_video()
+            else:
+                unavailable_video = self.browser.find_elements(
+                    By.XPATH,
+                    "//p[contains(text(), 'This video is only available for subscribers.')]",
+                )
+                if unavailable_video:
+                    return unavailable_video[0]
             time.sleep(retry_interval)
-        raise TimeoutError("Video did not load within the specified timeout period.")
+        raise TimeoutException(
+            "Video did not load within the specified timeout period."
+        )
 
     def get_loaded_chat(self):
         return WebDriverWait(self.browser, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'div[dir="auto"]'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.CHAT_MSG))
         )
 
-    def all_elements(self):
-        return [
+    def load_streamer_elements(self):
+        streamer_elements = [
             self.go_to_all_games_page_icon(),
             self.show_top_navigation_menu_icon(),
             self.search_icon(),
@@ -108,6 +124,22 @@ class StreamerPage:
             self.get_loaded_video(),
             self.get_loaded_chat(),
         ]
+
+        try:
+            pop_up_window = WebDriverWait(self.browser, 15).until(
+                EC.visibility_of_element_located(
+                    (By.CSS_SELECTOR, "//h3[contains(text(), 'Just one second...')]")
+                )
+            )
+            if pop_up_window:
+                close_button = pop_up_window.find_element(
+                    By.XPATH, "//button[contains(., 'Start Watching')]"
+                )
+                close_button.click()
+        except:
+            pass
+
+        return streamer_elements
 
     def take_screenshot(self):
         current_directory = os.getcwd()

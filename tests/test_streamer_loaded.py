@@ -1,5 +1,5 @@
-import pytest
 import allure
+import pytest
 
 from pageObjects.Streamer import StreamerPage
 from pageObjects.Twitch import MainPage
@@ -21,10 +21,10 @@ def test_streamer_loaded(mobile_browser):
     twitch_page.go_to_search()
     twitch_page.search_for("StarCraft II")
     twitch_page.scroll_down(2)
-    twitch_page.click_first_visible_streamer()
+    twitch_page.click_random_streamer()
 
     streamer_page = StreamerPage(mobile_browser)
-    elements = streamer_page.all_elements()
+    elements = streamer_page.load_streamer_elements()
     streamer_page.take_screenshot()
 
     for element in elements:

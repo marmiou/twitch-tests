@@ -1,3 +1,5 @@
+import logging
+import random
 import time
 
 from selenium.webdriver.common.by import By
@@ -13,6 +15,7 @@ class MainPage:
     SEARCH_ICON_SELECTOR = 'a[aria-label="Search"]'
     SEARCH_INPUT_SELECTOR = 'input[type="search"]'
     FIRST_STREAMER_SELECTOR = '[title="ESL_CS2"]'
+    STREAMER_IMAGE_SELECTOR = ".tw-card-image"
 
     def __init__(self, browser):
         self.browser = browser
@@ -54,26 +57,50 @@ class MainPage:
         search_input.send_keys(Keys.ENTER)
 
     def scroll_down(self, times=1):
+        initial_scroll_position = self.browser.execute_script(
+            "return window.pageYOffset;"
+        )
+
         for _ in range(times):
             self.browser.execute_script(
                 "window.scrollTo(0, document.body.scrollHeight);"
             )
-            WebDriverWait(self.browser, 2).until(
-                EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "main"))
-            )
+            time.sleep(10)
+
+        final_scroll_position = self.browser.execute_script(
+            "return window.pageYOffset;"
+        )
+
+        if final_scroll_position > initial_scroll_position:
+            logging.info("Scrolling was successful.")
+        else:
+            logging.warn("Scrolling did not occur as expected.")
 
     def find_all_streamers(self):
-        return WebDriverWait(self.browser, 10).until(
+        return WebDriverWait(self.browser, 20).until(
             EC.presence_of_all_elements_located(
-                (By.XPATH, '//img[contains(@class, "tw-image")]')
+                (By.CSS_SELECTOR, self.STREAMER_IMAGE_SELECTOR)
             )
         )
 
-    def click_first_visible_streamer(self):
+    def is_element_on_screen(self, element):
+        return element.location_once_scrolled_into_view["y"] >= 0
+
+    def click_random_streamer(self):
         streamer_elements = self.find_all_streamers()
-        first_visible_streamer = None
-        for streamer_element in streamer_elements:
-            if streamer_element.is_displayed():
-                first_visible_streamer = streamer_element
-                break
-        first_visible_streamer.click()
+
+        visible_streamer_elements = [
+            element
+            for element in streamer_elements
+            if element.is_displayed() and self.is_element_on_screen(element)
+        ]
+
+        if visible_streamer_elements:
+            random_streamer = random.choice(visible_streamer_elements)
+            # Scroll to the random streamer before clicking
+            self.browser.execute_script(
+                "arguments[0].scrollIntoView();", random_streamer
+            )
+            random_streamer.click()
+        else:
+            logging.warn("No visible streamer found.")
