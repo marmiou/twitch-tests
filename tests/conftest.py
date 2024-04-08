@@ -7,7 +7,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 @pytest.fixture()
 def chrome_browser():
-    driver = webdriver.Chrome()  # Consider using ChromeDriverManager as well for dynamic binary management
+    driver = (
+        webdriver.Chrome()
+    )  # Consider using ChromeDriverManager as well for dynamic binary management
     driver.implicitly_wait(10)
     yield driver
     driver.quit()
@@ -20,8 +22,9 @@ def mobile_browser(request):
     chrome_options = Options()
     chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
 
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    driver = webdriver.Chrome(
+        service=Service(ChromeDriverManager().install()), options=chrome_options
+    )
     driver.implicitly_wait(10)
     yield driver
     driver.quit()
-

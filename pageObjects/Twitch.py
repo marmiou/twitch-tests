@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class MainPage:
-    COOKIE_MODAL_CLASS = 'ReactModal__Body--open'
+    COOKIE_MODAL_CLASS = "ReactModal__Body--open"
     COOKIE_POPUP_CSS_SELECTOR = ".ScTransitionBase-sc-hx4quq-0"
     CLOSE_BUTTON_XPATH = '//button[contains(., "Close")]'
     SEARCH_ICON_SELECTOR = 'a[aria-label="Search"]'
@@ -24,17 +24,24 @@ class MainPage:
     def close_cookie_modal(self):
 
         cookie_popup = WebDriverWait(self.browser, 10).until(
-                EC.visibility_of_element_located((By.CSS_SELECTOR, self.COOKIE_POPUP_CSS_SELECTOR)))
+            EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, self.COOKIE_POPUP_CSS_SELECTOR)
+            )
+        )
         close_button = cookie_popup.find_element(By.XPATH, self.CLOSE_BUTTON_XPATH)
         close_button.click()
 
     def search_icon(self):
         return WebDriverWait(self.browser, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.SEARCH_ICON_SELECTOR)))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.SEARCH_ICON_SELECTOR))
+        )
 
     def search_input(self):
         return WebDriverWait(self.browser, 10).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, self.SEARCH_INPUT_SELECTOR)))
+            EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, self.SEARCH_INPUT_SELECTOR)
+            )
+        )
 
     def go_to_search(self):
         element = self.search_icon()
@@ -48,11 +55,19 @@ class MainPage:
 
     def scroll_down(self, times=1):
         for _ in range(times):
-            self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            WebDriverWait(self.browser, 2).until(EC.visibility_of_all_elements_located((By.CSS_SELECTOR, 'main')))
+            self.browser.execute_script(
+                "window.scrollTo(0, document.body.scrollHeight);"
+            )
+            WebDriverWait(self.browser, 2).until(
+                EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "main"))
+            )
 
     def find_all_streamers(self):
-        return WebDriverWait(self.browser, 10).until(EC.presence_of_all_elements_located((By.XPATH, '//img[contains(@class, "tw-image")]')))
+        return WebDriverWait(self.browser, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, '//img[contains(@class, "tw-image")]')
+            )
+        )
 
     def click_first_visible_streamer(self):
         streamer_elements = self.find_all_streamers()
@@ -62,5 +77,3 @@ class MainPage:
                 first_visible_streamer = streamer_element
                 break
         first_visible_streamer.click()
-
-

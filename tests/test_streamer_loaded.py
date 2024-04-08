@@ -4,7 +4,7 @@ from pageObjects.Streamer import StreamerPage
 from pageObjects.Twitch import MainPage
 
 
-@pytest.mark.parametrize('mobile_browser', ['iPhone X'], indirect=True) #'Galaxy S5'
+@pytest.mark.parametrize("mobile_browser", ["iPhone X"], indirect=True)  #'Galaxy S5'
 def test_streamer_loaded(mobile_browser):
     twitch_page = MainPage(mobile_browser)
     twitch_page.go_to_url("https://m.twitch.tv/")
@@ -20,5 +20,3 @@ def test_streamer_loaded(mobile_browser):
 
     for element in elements:
         assert element is not None, f"Element {element} is not present in the streamer"
-
-

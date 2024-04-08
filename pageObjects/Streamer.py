@@ -8,20 +8,22 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class StreamerPage:
-    VIDEO_CSS_SELECTOR = 'video'
-    STREAMER_NAME_CSS_SELECTOR = '.CoreText-sc-1txzju1-0.kNTExs'
+    VIDEO_CSS_SELECTOR = "video"
+    STREAMER_NAME_CSS_SELECTOR = ".CoreText-sc-1txzju1-0.kNTExs"
     FOLLOW_BUTTON_CSS_SELECTOR = 'div[data-a-target="tw-core-button-label-text"]'
     DROPDOWN_MENU_CSS_SELECTOR = '[aria-label="Open Dropdown Menu"]'
     WELCOME_TO_CHAT_ROOM_XPATH = '//div[contains(text(), "Welcome to the chat room!")]'
     GO_TO_ALL_GAMES_PAGE_ICON_CSS_SELECTOR = '[aria-label="Go to all games page"]'
-    SHOW_TOP_NAVIGATION_MENU_ICON_CSS_SELECTOR = '[aria-label="Show top navigation menu"]'
+    SHOW_TOP_NAVIGATION_MENU_ICON_CSS_SELECTOR = (
+        '[aria-label="Show top navigation menu"]'
+    )
     SEARCH_ICON_CSS_SELECTOR = '[aria-label="Search"]'
     SEND_MSG_INPUT_XPATH = '//p[contains(text(), "Send a message")]'
     CHAT_BTN_XPATH = '//p[contains(@class, "CoreText-sc-1txzju1-0 UFdlN") and contains(text(), "Chat")]'
-    REPORTS_DIR = 'reports'
-    SCREENSHOT_DIR = 'screenshots'
-    SCREENSHOT_IMAGE = 'screenshot.png'
-    READY_STATE = 'return arguments[0].readyState;'
+    REPORTS_DIR = "reports"
+    SCREENSHOT_DIR = "screenshots"
+    SCREENSHOT_IMAGE = "screenshot.png"
+    READY_STATE = "return arguments[0].readyState;"
     CHAT_MSG = 'div[dir="auto"]'
 
     def __init__(self, browser):
@@ -29,11 +31,13 @@ class StreamerPage:
 
     def find_element_by_css_selector(self, css_selector):
         return WebDriverWait(self.browser, 10).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, css_selector)))
+            EC.visibility_of_element_located((By.CSS_SELECTOR, css_selector))
+        )
 
     def find_element_by_xpath(self, xpath):
         return WebDriverWait(self.browser, 10).until(
-            EC.visibility_of_element_located((By.XPATH, xpath)))
+            EC.visibility_of_element_located((By.XPATH, xpath))
+        )
 
     def streamer_name(self):
         return self.find_element_by_css_selector(self.STREAMER_NAME_CSS_SELECTOR)
@@ -48,10 +52,14 @@ class StreamerPage:
         return self.find_element_by_xpath(self.WELCOME_TO_CHAT_ROOM_XPATH)
 
     def go_to_all_games_page_icon(self):
-        return self.find_element_by_css_selector(self.GO_TO_ALL_GAMES_PAGE_ICON_CSS_SELECTOR)
+        return self.find_element_by_css_selector(
+            self.GO_TO_ALL_GAMES_PAGE_ICON_CSS_SELECTOR
+        )
 
     def show_top_navigation_menu_icon(self):
-        return self.find_element_by_css_selector(self.SHOW_TOP_NAVIGATION_MENU_ICON_CSS_SELECTOR)
+        return self.find_element_by_css_selector(
+            self.SHOW_TOP_NAVIGATION_MENU_ICON_CSS_SELECTOR
+        )
 
     def search_icon(self):
         return self.find_element_by_css_selector(self.SEARCH_ICON_CSS_SELECTOR)
@@ -83,7 +91,8 @@ class StreamerPage:
 
     def get_loaded_chat(self):
         return WebDriverWait(self.browser, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'div[dir="auto"]')))
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'div[dir="auto"]'))
+        )
 
     def all_elements(self):
         return [
@@ -97,15 +106,18 @@ class StreamerPage:
             self.send_msg_input(),
             self.chat_btn(),
             self.get_loaded_video(),
-            self.get_loaded_chat()
-            ]
+            self.get_loaded_chat(),
+        ]
 
     def take_screenshot(self):
         current_directory = os.getcwd()
         screenshot_path = os.path.join(current_directory, self.SCREENSHOT_IMAGE)
         self.browser.save_screenshot(screenshot_path)
 
-        destination_directory = os.path.join(current_directory, self.REPORTS_DIR, self.SCREENSHOT_DIR)
+        destination_directory = os.path.join(
+            current_directory, self.REPORTS_DIR, self.SCREENSHOT_DIR
+        )
         os.makedirs(destination_directory, exist_ok=True)
-        shutil.move(screenshot_path, os.path.join(destination_directory, self.SCREENSHOT_IMAGE))
-
+        shutil.move(
+            screenshot_path, os.path.join(destination_directory, self.SCREENSHOT_IMAGE)
+        )
