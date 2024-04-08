@@ -1,0 +1,46 @@
+name: Run tests automatically on push
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/*'
+
+jobs:
+  run-ui-tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="$HOME/.local/bin:$PATH"
+
+      - name: Install Allure
+        run: |
+          brew install allure
+
+      - name: Install project dependencies
+        run: poetry install
+
+      - name: Run tests
+        run: |
+          poetry run pytest --headless --alluredir=reports/allure-results
+
+      - name: Generate Allure report
+        run: |
+          allure generate reports/allure-results -o reports/allure-report --clean
+
+      - name: View Allure report
+        run: allure open reports/allure-report
