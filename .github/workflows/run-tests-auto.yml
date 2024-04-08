@@ -1,4 +1,4 @@
-name: Run tests automatically on push
+name: WIP:Run tests automatically on push
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest]
 
     steps:
       - name: Checkout
@@ -23,24 +23,49 @@ jobs:
           python-version: '3.12'
 
       - name: Install Poetry
+        if: ${{ success() }}
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          export PATH="$HOME/.local/bin:$PATH"
+          python3 -m pip install --user poetry
 
-      - name: Install Allure
+      - name: Install Homebrew (macOS)
+        if: matrix.os == 'macos-latest' && success()
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+      - name: Install Allure (Linux)
+        if: matrix.os == 'ubuntu-latest' && success()
+        run: |
+          sudo apt-get update
+          sudo apt-get install allure
+
+      - name: Install Allure (macOS)
+        if: matrix.os == 'macos-latest' && success()
         run: |
           brew install allure
 
       - name: Install project dependencies
-        run: poetry install
+        if: ${{ success() }}
+        run: |
+          poetry install
+
+      - name: Verify Poetry installation
+        if: ${{ success() }}
+        run: |
+          poetry --version
 
       - name: Run tests
+        if: ${{ success() }}
         run: |
           poetry run pytest --headless --alluredir=reports/allure-results
 
       - name: Generate Allure report
+        if: ${{ success() }}
         run: |
           allure generate reports/allure-results -o reports/allure-report --clean
 
-      - name: View Allure report
-        run: allure open reports/allure-report
+      - name: Archive Allure report as artifact
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: allure-report
+          path: reports/allure-report
