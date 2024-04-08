@@ -14,8 +14,6 @@ python3 -V
 ```
 - You have installed Poetry for dependency management. If you haven't, follow the installation instructions below.
 
-## Installation
-
 ### Installing Poetry
 
 Poetry is a tool for dependency management and packaging in Python. To install Poetry, run the following command:
@@ -24,6 +22,15 @@ Poetry is a tool for dependency management and packaging in Python. To install P
 curl -sSL https://install.python-poetry.org | python3 -
 ```
 For other installation methods, visit the [official Poetry documentation](https://python-poetry.org/docs/).
+
+NOTE: Don't forget to add Poetry in the path (in your .bashrc or .zshrc file)
+
+- You have installed Allure, which will be our Reporting tool
+
+### Installing Allure
+```bash
+brew install allure
+```
 
 ## Installation
 
@@ -39,15 +46,16 @@ poetry install
 ```
 
 ## Available Commands
-To activate the project's virtual environment, run:
+To activate the project's virtual environment and run tests:
 ```bash
 poetry shell
+pytest
 ```
 
 Alternatively, you can run commands within the virtual environment without activating it by using poetry run. 
-For example, to run a specific test:
+For example, to run a specific test file:
 ```bash
-poetry run pytest
+poetry run pytest tests/test_strreamer_loaded.py
 ```
 
 Or, to run all e2e tests:
@@ -58,6 +66,12 @@ poetry run pytest
 Reports of the run can be found under the directory:
 ```bash
 allure/reports
+```
+
+To open reports execute:
+
+```bash
+allure serve reports/allure-results
 ```
 
 ## Built With
