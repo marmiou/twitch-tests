@@ -86,6 +86,22 @@ allure serve reports/allure-results
 ## Screen Recording of the implemented test uploaded in github repo twitch-test-gif:
 ![Alt Text](https://github.com/marmiou/twitch-test-gif/blob/main/mytest.gif)
 
+## Repo Structure explained:
+The structure of the repo is the following:
+![Alt Text](https://github.com/marmiou/twitch-test-gif/blob/main/repo-structure.png)
+
+- .github: Contains github actions so that we can run the tests on CI. This is WIP and is still failing
+  - auto trigger of tests on push
+  - manual trigger of tests from github Actions
+In general, github contains any configuration related to github (example we could have an issue template here)
+- configuration: Contains anything related with the configuration of the repo
+- pageObjects: Used Page Object Pattern, so the two Page Objects (Twitch & Streamer), which contain all the
+interactions with these pages are placed here (elements + functionality).
+- tests: directory with the test & the conftest file
+- utilities: this was not used after all, but we can place here any code not related to the previous directories
+- reports: Not a repo dir, it is produced after test execution. 
+It contains produced allure-results + produced screenshot
+
 ## Known issues:
 - [Issue #1 Handle muted videos](https://github.com/marmiou/twitch-tests/issues/1)
 - [Issue #2 Handle categories](https://github.com/marmiou/twitch-tests/issues/2)
