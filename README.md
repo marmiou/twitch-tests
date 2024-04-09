@@ -86,6 +86,9 @@ allure serve reports/allure-results
 ## Screen Recording of the implemented test uploaded in github repo twitch-test-gif:
 ![Alt Text](https://github.com/marmiou/twitch-test-gif/blob/main/mytest.gif)
 
+## Known issues:
+- [Issue #1 Handle muted videos](https://github.com/marmiou/twitch-tests/issues/1)
+- [Issue #2 Handle categories](https://github.com/marmiou/twitch-tests/issues/2)
 
 ## Author
 

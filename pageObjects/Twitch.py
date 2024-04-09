@@ -72,7 +72,6 @@ class MainPage:
             self.browser.execute_script(
                 "window.scrollTo(0, document.body.scrollHeight);"
             )
-            time.sleep(5)
 
         final_scroll_position = self.browser.execute_script(
             "return window.pageYOffset;"
