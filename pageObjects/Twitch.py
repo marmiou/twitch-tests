@@ -15,17 +15,19 @@ class MainPage:
     SEARCH_ICON_SELECTOR = 'a[aria-label="Search"]'
     SEARCH_INPUT_SELECTOR = 'input[type="search"]'
     FIRST_STREAMER_SELECTOR = '[title="ESL_CS2"]'
-    STREAMER_IMAGE_SELECTOR = ".tw-card-image"
+    ONLY_STREAMER_ELEMENTS_XPATH = "//section[contains(div/p, 'CHANNELS')]//img[@class='tw-image'] | //section[contains(div/p, 'People searching for \"Starcraft II\" also watch:')]//img[@class='tw-image'] | //section[contains(div/p, 'VIDEOS')]//img[@class='tw-image']"
 
     def __init__(self, browser):
         self.browser = browser
+        logging.basicConfig(level=logging.INFO)
 
     def go_to_url(self, url):
+        logging.info(f"Navigating to URL: {url}")
         self.browser.get(url)
         WebDriverWait(self.browser, 10).until(EC.url_matches(url))
 
     def close_cookie_modal(self):
-
+        logging.info("Closing cookie modal")
         cookie_popup = WebDriverWait(self.browser, 10).until(
             EC.visibility_of_element_located(
                 (By.CSS_SELECTOR, self.COOKIE_POPUP_CSS_SELECTOR)
@@ -35,11 +37,13 @@ class MainPage:
         close_button.click()
 
     def search_icon(self):
+        logging.info("Finding search icon")
         return WebDriverWait(self.browser, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, self.SEARCH_ICON_SELECTOR))
         )
 
     def search_input(self):
+        logging.info("Finding search input")
         return WebDriverWait(self.browser, 10).until(
             EC.visibility_of_element_located(
                 (By.CSS_SELECTOR, self.SEARCH_INPUT_SELECTOR)
@@ -47,16 +51,19 @@ class MainPage:
         )
 
     def go_to_search(self):
+        logging.info("Navigating to search")
         element = self.search_icon()
         element.click()
         self.search_input()
 
     def search_for(self, text):
+        logging.info(f"Searching for: {text}")
         search_input = self.search_input()
         search_input.send_keys(text)
         search_input.send_keys(Keys.ENTER)
 
     def scroll_down(self, times=1):
+        logging.info(f"Scrolling down {times} times")
         initial_scroll_position = self.browser.execute_script(
             "return window.pageYOffset;"
         )
@@ -65,7 +72,7 @@ class MainPage:
             self.browser.execute_script(
                 "window.scrollTo(0, document.body.scrollHeight);"
             )
-            time.sleep(10)
+            time.sleep(5)
 
         final_scroll_position = self.browser.execute_script(
             "return window.pageYOffset;"
@@ -74,19 +81,22 @@ class MainPage:
         if final_scroll_position > initial_scroll_position:
             logging.info("Scrolling was successful.")
         else:
-            logging.warn("Scrolling did not occur as expected.")
+            logging.warning("Scrolling did not occur as expected.")
 
     def find_all_streamers(self):
+        logging.info("Finding all streamers")
         return WebDriverWait(self.browser, 20).until(
             EC.presence_of_all_elements_located(
-                (By.CSS_SELECTOR, self.STREAMER_IMAGE_SELECTOR)
+                (By.XPATH, self.ONLY_STREAMER_ELEMENTS_XPATH)
             )
         )
 
     def is_element_on_screen(self, element):
+        logging.info("Checking if stream element is on screen")
         return element.location_once_scrolled_into_view["y"] >= 0
 
     def click_random_streamer(self):
+        logging.info("Clicking random streamer")
         streamer_elements = self.find_all_streamers()
 
         visible_streamer_elements = [
@@ -97,10 +107,9 @@ class MainPage:
 
         if visible_streamer_elements:
             random_streamer = random.choice(visible_streamer_elements)
-            # Scroll to the random streamer before clicking
             self.browser.execute_script(
                 "arguments[0].scrollIntoView();", random_streamer
             )
             random_streamer.click()
         else:
-            logging.warn("No visible streamer found.")
+            logging.warning("No visible streamer found.")

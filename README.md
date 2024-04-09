@@ -80,6 +80,12 @@ allure serve reports/allure-results
 - Selenium
 - Poetry
 - Allure reporter
+- isort
+- black
+
+## Screen Recording of the implemented test uploaded in github repo twitch-test-gif:
+![Alt Text](https://github.com/marmiou/twitch-test-gif/blob/main/mytest.gif)
+
 
 ## Author
 
