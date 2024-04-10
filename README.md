@@ -84,7 +84,7 @@ allure serve reports/allure-results
 - black
 
 ## Screen Recording of the implemented test uploaded in github repo twitch-test-gif:
-![Alt Text](https://github.com/marmiou/twitch-test-gif/blob/main/mytest.gif)
+![Alt Text](https://github.com/marmiou/twitch-test-gif/blob/main/mytest-bigger.gif)
 
 ## Repo Structure explained:
 The structure of the repo is the following:
@@ -94,7 +94,8 @@ The structure of the repo is the following:
   - auto trigger of tests on push
   - manual trigger of tests from github Actions
 In general, github contains any configuration related to github (example we could have an issue template here)
-- configuration: Contains anything related with the configuration of the repo
+- configuration: Contains anything related with the configuration of the repo. Just a small note, we used config.ini file,
+but we did not use the configuration in our project after all
 - pageObjects: Used Page Object Pattern, so the two Page Objects (Twitch & Streamer), which contain all the
 interactions with these pages are placed here (elements + functionality).
 - tests: directory with the test & the conftest file
