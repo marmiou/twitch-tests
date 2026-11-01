@@ -1,68 +1,73 @@
-name: WIP:Run tests manually
+
+name: Run tests manually
 
 on:
-  workflow_dispatch:  # Triggered manually
+  workflow_dispatch:
 
 jobs:
   run-ui-tests:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v7
 
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
+          cache: 'poetry'
 
       - name: Install Poetry
-        if: ${{ success() }}
         run: |
-          python3 -m pip install --user poetry
-
-      - name: Install Homebrew (macOS)
-        if: matrix.os == 'macos-latest' && success()
-        run: |
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          python -m pip install poetry
 
       - name: Install Allure (Linux)
-        if: matrix.os == 'ubuntu-latest' && success()
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install allure
+          sudo apt-get install -y default-jre
+          RELEASE_URL=$(python -c "import json, urllib.request; d=json.load(urllib.request.urlopen('https://api.github.com/repos/allure-framework/allure2/releases/latest')); print(next(a['browser_download_url'] for a in d['assets'] if a['name'].endswith('.tgz')))")
+          curl -fsSL "$RELEASE_URL" -o allure.tgz
+          sudo tar -xzf allure.tgz -C /opt/
+          ALLURE_DIR=$(find /opt -maxdepth 1 -type d -name 'allure-*' | sort -V | tail -n 1)
+          sudo ln -sf "$ALLURE_DIR/bin/allure" /usr/local/bin/allure
 
       - name: Install Allure (macOS)
-        if: matrix.os == 'macos-latest' && success()
+        if: runner.os == 'macOS'
         run: |
           brew install allure
 
       - name: Install project dependencies
-        if: ${{ success() }}
         run: |
-          poetry install
+          poetry install --no-interaction
 
-      - name: Verify Poetry installation
-        if: ${{ success() }}
+      - name: Verify installations
         run: |
+          python --version
           poetry --version
+          allure --version
 
       - name: Run tests
-        if: ${{ success() }}
         run: |
           poetry run pytest --headless --alluredir=reports/allure-results
 
       - name: Generate Allure report
-        if: ${{ success() }}
+        if: always() && hashFiles('reports/allure-results/**') != ''
         run: |
-          allure generate reports/allure-results -o reports/allure-report --clean
+          allure generate reports/allure-results \
+            -o reports/allure-report \
+            --clean
 
       - name: Archive Allure report as artifact
-        if: ${{ success() }}
-        uses: actions/upload-artifact@v2
+        if: always()
+        uses: actions/upload-artifact@v7
         with:
-          name: allure-report
+          name: allure-report-${{ matrix.os }}
           path: reports/allure-report
+          if-no-files-found: ignore
+          retention-days: 14
