@@ -1,4 +1,4 @@
-# Sporty WAP Tests
+# WAP Tests
 <h1 align="center">Web Automation with Pytest and Selenium</h1>
 
 ## Links
